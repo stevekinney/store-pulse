@@ -1,12 +1,12 @@
 # StorePulse — Operations Dashboard (Demo)
 
-A small, demo-only operations dashboard for a fictional pet retail chain. It is
+A small, demo-only operations dashboard for a fictional retail chain. It is
 intended for a workshop on using Codex to read, extend, refactor, and test an
 existing codebase. **Nothing here is production software, none of the data is
 real, and the app is not affiliated with any real retailer.**
 
-The app lets a regional operations manager see, at a glance, which stores have
-low inventory, which products need attention, which tasks are open, and how
+The application lets a regional operations manager see, at a glance, which stores
+have low inventory, which products need attention, which tasks are open, and how
 each store is doing overall.
 
 ## Prerequisites
@@ -65,18 +65,18 @@ npm run test:e2e           # playwright
 
 ## Useful scripts
 
-| Script | What it does |
-| --- | --- |
-| `npm run dev` | Start the dev server (Turbopack). |
-| `npm run build` | Production build. |
-| `npm run start` | Start a production build. |
-| `npm run lint` | ESLint. |
-| `npm run test` | Vitest unit tests. |
-| `npm run test:e2e` | Playwright end-to-end tests. |
-| `npm run db:seed` | Seed the database. |
+| Script             | What it does                                   |
+| ------------------ | ---------------------------------------------- |
+| `npm run dev`      | Start the dev server (Turbopack).              |
+| `npm run build`    | Production build.                              |
+| `npm run start`    | Start a production build.                      |
+| `npm run lint`     | ESLint.                                        |
+| `npm run test`     | Vitest unit tests.                             |
+| `npm run test:e2e` | Playwright end-to-end tests.                   |
+| `npm run db:seed`  | Seed the database.                             |
 | `npm run db:reset` | Drop and re-create the database, then re-seed. |
 
-## How the metrics work (status semantics)
+## How the metrics work
 
 To prevent the dashboard from flagging work on retired stores or
 discontinued products, the pure aggregation helpers in `lib/metrics.ts`

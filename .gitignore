@@ -49,3 +49,4 @@ prisma/test.db*
 *.tsbuildinfo
 next-env.d.ts
 tmp/
+*.pptx
