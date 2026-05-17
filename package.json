@@ -11,7 +11,9 @@
     "test:e2e": "playwright test",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "prisma migrate reset --force"
+    "db:reset": "prisma migrate reset --force",
+    "setup": "cp -n .env.example .env && prisma generate && prisma migrate deploy && npm run db:seed",
+    "postinstall": "test -f .env || npm run setup"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
