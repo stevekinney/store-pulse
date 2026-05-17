@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StorePulse — Operations Dashboard (Demo)
 
-## Getting Started
+A small, demo-only operations dashboard for a fictional pet retail chain. It is
+intended for a workshop on using Codex to read, extend, refactor, and test an
+existing codebase. **Nothing here is production software, none of the data is
+real, and the app is not affiliated with any real retailer.**
 
-First, run the development server:
+The app lets a regional operations manager see, at a glance, which stores have
+low inventory, which products need attention, which tasks are open, and how
+each store is doing overall.
+
+## Prerequisites
+
+- **Node.js 20.9+** (Next.js 16 minimum).
+- **npm** — the project ships a `package-lock.json`.
+
+## Install
+
+```bash
+npm install
+```
+
+## Database setup
+
+The app uses Prisma with a local SQLite database. The initial migration is
+checked in to `prisma/migrations/` so a fresh clone is reproducible.
+
+```bash
+cp .env.example .env
+npx prisma generate
+npx prisma migrate deploy
+npm run db:seed
+```
+
+The seed populates 8 stores, 20 products, 160 inventory rows, and 20 tasks. A
+realistic chunk of inventory is intentionally below its reorder threshold so
+the dashboard has meaningful low-stock alerts.
+
+## Run the app
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open the routes in your browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `/` — operations dashboard with headline metrics, urgent low-stock list,
+  recent active tasks, and a store-health table.
+- `/stores` — table of all stores with operational counts.
+- `/stores/[id]` — store detail with inventory and tasks.
+- `/products` — product catalog with a category filter.
+- `/tasks` — all tasks across the chain; mark active tasks complete from
+  here.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tests
 
-## Learn More
+Unit tests with Vitest, plus one end-to-end test with Playwright. The E2E test
+uses a separate `prisma/test.db` so it does not touch your dev database.
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run test               # vitest
+npx playwright install chromium    # one-time; add --with-deps on Linux CI
+npm run test:e2e           # playwright
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Useful scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server (Turbopack). |
+| `npm run build` | Production build. |
+| `npm run start` | Start a production build. |
+| `npm run lint` | ESLint. |
+| `npm run test` | Vitest unit tests. |
+| `npm run test:e2e` | Playwright end-to-end tests. |
+| `npm run db:seed` | Seed the database. |
+| `npm run db:reset` | Drop and re-create the database, then re-seed. |
 
-## Deploy on Vercel
+## How the metrics work (status semantics)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To prevent the dashboard from flagging work on retired stores or
+discontinued products, the pure aggregation helpers in `lib/metrics.ts`
+apply a few rules:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Inactive products** are still listed on `/products` and `/stores/[id]`
+  with an "Inactive" badge, but they are excluded from every low-stock
+  metric.
+- **Closed stores** still appear on `/stores` (with the Closed badge) so
+  managers can find them, but they are excluded from the dashboard's
+  headline counts, urgent low-stock list, recent-active-tasks list, and
+  the store-health rollup. On the `/stores` table, their counts render as
+  `—`.
+- **Maintenance stores** are included in every metric — they are still
+  operational, just under maintenance.
+
+The same rules are unit-tested in `tests/unit/metrics.test.ts`.
+
+## Future feature ideas
+
+Workshop extension points the codebase is structured for:
+
+- Smart reorder suggestions based on inventory severity + supplier history.
+- A per-store incident timeline alongside tasks.
+- An AI-style store operations assistant that answers questions across
+  inventory, products, and tasks.
+- Task assignment to named team members.
+- Inventory search and filtering across stores.
+- A regional reporting dashboard that rolls up the same metrics by region
+  rather than by store.
+
+## Schema changes
+
+When the schema evolves, author a new migration with:
+
+```bash
+npx prisma migrate dev --name <migration-name>
+```
+
+The committed initial migration is **not** edited in place — new migrations
+are stacked on top so anyone can re-create the same database from scratch.
