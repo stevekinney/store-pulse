@@ -1,10 +1,4 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
-
-# StorePulse — Agent Guide
+# Store Pulse
 
 StorePulse is a small, demo-only operations dashboard for a fictional pet retail chain. It exists to support a workshop on reading, extending, refactoring, and testing an existing codebase. **Nothing here is production software, none of the data is real, and the app is not affiliated with any real retailer.**
 
@@ -37,18 +31,18 @@ The seed populates 8 stores, 20 products, 160 inventory rows, and 20 tasks. A re
 
 ## Everyday commands
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Start the Turbopack dev server. |
-| `npm run build` | Production build. |
-| `npm run start` | Serve the production build. |
-| `npm run lint` | ESLint via `eslint.config.mjs`. |
-| `npm run test` | Vitest unit tests (single run, not watch). |
-| `npm run test:e2e` | Playwright end-to-end test against `prisma/test.db`. |
-| `npm run db:migrate` | `prisma migrate dev` — author a new migration. |
-| `npm run db:seed` | Re-seed the current database. |
-| `npm run db:reset` | Drop, re-create, and re-seed. |
-| `npm run setup` | First-time bootstrap (env + generate + migrate deploy + seed). |
+| Command              | What it does                                                   |
+| -------------------- | -------------------------------------------------------------- |
+| `npm run dev`        | Start the Turbopack dev server.                                |
+| `npm run build`      | Production build.                                              |
+| `npm run start`      | Serve the production build.                                    |
+| `npm run lint`       | ESLint via `eslint.config.mjs`.                                |
+| `npm run test`       | Vitest unit tests (single run, not watch).                     |
+| `npm run test:e2e`   | Playwright end-to-end test against `prisma/test.db`.           |
+| `npm run db:migrate` | `prisma migrate dev` — author a new migration.                 |
+| `npm run db:seed`    | Re-seed the current database.                                  |
+| `npm run db:reset`   | Drop, re-create, and re-seed.                                  |
+| `npm run setup`      | First-time bootstrap (env + generate + migrate deploy + seed). |
 
 Playwright needs a one-time browser install: `npx playwright install chromium` (add `--with-deps` on Linux CI).
 
