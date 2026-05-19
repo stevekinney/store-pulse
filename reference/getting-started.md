@@ -22,19 +22,6 @@ you do need the project to install and test successfully.
 
 ## Open the Repository
 
-Start in the project root:
-
-```bash
-cd /Users/you/Developer/store-pulse
-```
-
-Confirm you are in the right place:
-
-```bash
-pwd
-ls
-```
-
 You should see files and directories such as:
 
 ```text
