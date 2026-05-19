@@ -1,0 +1,6 @@
+# Store Pulse placeholder configuration.
+# This file exists as a lightweight project-level configuration anchor.
+
+[project]
+name = "store-pulse"
+environment = "local"
