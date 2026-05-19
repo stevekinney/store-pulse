@@ -89,7 +89,7 @@ mechanics for you:
 | Sends follow-up messages | Codex can message a running agent, optionally interrupting it for an urgent correction. |
 | Waits for results | Codex can wait for one or more agents when their output is needed. |
 | Surfaces completion | Finished agents return a final status and may include their final answer. |
-| Lets you switch threads | `/agent` and `/subagents` open the agent-thread picker in interactive Codex. |
+| Lets you switch threads | `/agent` opens the agent-thread picker in interactive Codex. |
 | Can close agents | Codex can close agents that are no longer needed so they do not keep running. |
 
 Codex also uses the current workspace, permission profile, available tools, and

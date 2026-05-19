@@ -243,20 +243,6 @@ Common forms:
 Use it when Codex is expected to keep working across multiple turns or
 checkpoints. A good goal is outcome-oriented and verifiable.
 
-### `/collab`
-
-Changes collaboration mode, when collaboration modes are enabled.
-
-Best use:
-
-```text
-/collab
-```
-
-Use it when you want to switch between working styles, such as planning,
-default implementation, or other collaboration modes available in your Codex
-build.
-
 ## Conversation Management
 
 ### `/new`
@@ -348,7 +334,7 @@ Use side conversations for quick questions that should not derail the main
 thread. They are useful for explanations, tradeoff checks, and small
 investigations while the main task remains intact.
 
-### `/agent` and `/subagents`
+### `/agent`
 
 Switch the active agent thread.
 
@@ -358,7 +344,7 @@ Best use:
 /agent
 ```
 
-Use these when working in a Codex session that has multiple agent threads or
+Use this when working in a Codex session that has multiple agent threads or
 subagents. For a beginner workshop, mention the concept but do not start here.
 
 ### `/quit` and `/exit`
@@ -709,48 +695,7 @@ Best use:
 This is mainly useful for debugging Codex sessions or locating the local
 conversation artifact. It may not be visible in release builds.
 
-## Voice And Realtime Commands
-
-### `/realtime`
-
-Toggles realtime voice mode, when the experimental feature is enabled.
-
-Best use:
-
-```text
-/realtime
-```
-
-Use it when voice interaction is part of the workflow. For code review,
-documentation, and classroom demos, text prompts are usually easier to audit.
-
-### `/settings`
-
-Configures realtime microphone and speaker settings, when audio device
-selection is enabled.
-
-Best use:
-
-```text
-/settings
-```
-
-Use it with `/realtime`, not as a general Codex settings command.
-
 ## Platform-Specific Commands
-
-### `/setup-default-sandbox`
-
-Sets up elevated agent sandboxing on supported Windows configurations.
-
-Best use:
-
-```text
-/setup-default-sandbox
-```
-
-This command is platform-specific and should not appear on macOS or Linux in a
-normal release build.
 
 ### `/sandbox-add-read-dir`
 
@@ -780,12 +725,11 @@ Avoid them unless you are debugging Codex itself.
 
 Not every command is available all the time.
 
-**Feature-gated:** `/plan`, `/collab`, `/goal`, `/fast`, `/personality`,
-`/realtime`, `/settings`, `/apps`, and `/plugins` depend on enabled features or
-configured integrations.
+**Feature-gated:** `/plan`, `/goal`, `/fast`, `/personality`, `/apps`, and
+`/plugins` depend on enabled features, the selected model, or configured
+integrations.
 
-**Platform-specific:** `/setup-default-sandbox` and `/sandbox-add-read-dir`
-are Windows sandbox commands.
+**Platform-specific:** `/sandbox-add-read-dir` is a Windows sandbox command.
 
 **Debug-only:** `/rollout` and `/test-approval` are intended for debug builds.
 
@@ -871,7 +815,6 @@ fit the task, not as a reflex.
 | `/apps` | Manage apps/connectors. |
 | `/approve` | Approve one retry of a recent auto-review denial. |
 | `/clear` | Clear the terminal and start a new chat. |
-| `/collab` | Change collaboration mode. |
 | `/compact` | Summarize conversation context. |
 | `/copy` | Copy the last response as Markdown. |
 | `/debug-config` | Show configuration layers and requirement sources. |
@@ -901,21 +844,17 @@ fit the task, not as a reflex.
 | `/ps` | List background terminals. |
 | `/quit` | Exit Codex. |
 | `/raw` | Toggle raw scrollback mode. |
-| `/realtime` | Toggle realtime voice mode. |
 | `/rename` | Rename the current thread. |
 | `/resume` | Resume a saved chat. |
 | `/review` | Review current changes. |
 | `/rollout` | Print the rollout file path in debug builds. |
 | `/sandbox-add-read-dir` | Grant Windows sandbox read access to an absolute path. |
-| `/settings` | Configure realtime microphone/speaker. |
-| `/setup-default-sandbox` | Set up elevated sandboxing on supported Windows configurations. |
 | `/side` | Start a side conversation. |
 | `/skills` | Open the skills menu. |
 | `/status` | Show session configuration and token usage. |
 | `/statusline` | Configure status line items. |
 | `/stop` | Stop background terminals. |
 | `/clean` | Alias for `/stop`. |
-| `/subagents` | Switch active agent thread. |
 | `/test-approval` | Debug approval request command. |
 | `/theme` | Choose syntax highlighting theme. |
 | `/title` | Configure terminal title items. |

@@ -74,17 +74,34 @@ Related files often live beside `config.toml`:
 
 `config.toml` is configuration. It is not the only state Codex keeps.
 
-## Configuration Layers
+## Configuration Precedence
 
-Codex combines configuration from multiple places. The practical order to
-remember is:
+Codex combines configuration from several layers. When the same setting appears
+in more than one place, the more specific layer wins.
 
-1. User configuration in `~/.codex/config.toml` provides the usual defaults.
-2. Trusted project configuration in `.codex/config.toml` can add project-local
-   settings.
-3. CLI flags and session overrides win for the current invocation.
-4. Managed or administrative requirements may constrain what lower layers can
-   do.
+```text
+CLI flags
+↓
+Environment variables
+↓
+Project .codex/config.toml
+↓
+Global ~/.codex/config.toml
+↓
+Built-in defaults
+```
+
+In practice:
+
+- Built-in defaults provide the baseline behavior.
+- Global user configuration in `~/.codex/config.toml` sets your usual defaults.
+- Trusted project configuration in `.codex/config.toml` can add narrow
+  project-local settings.
+- Environment variables can override file-based settings for the current shell
+  environment.
+- CLI flags and `-c` session overrides win for the current invocation.
+- Managed or administrative requirements may still constrain what lower layers
+  can do.
 
 Temporary overrides are useful when you want to test a setting without editing
 the file:
@@ -144,8 +161,11 @@ model_verbosity = "medium"
 Supported reasoning effort values are:
 
 ```text
-none, minimal, low, medium, high, xhigh
+minimal, low, medium, high, xhigh
 ```
+
+`plan_mode_reasoning_effort` also accepts `none` when you want Plan mode to
+avoid an explicit reasoning-effort override.
 
 Supported reasoning summary values are:
 
@@ -226,6 +246,8 @@ Supported approval policies:
 - `untrusted`: only known safe read commands run automatically.
 - `on-request`: Codex decides when it needs user approval.
 - `never`: Codex never asks; failures are returned to the model.
+- `{ granular = { ... } }`: advanced configuration for allowing or
+  auto-rejecting specific approval categories.
 
 `on-failure` exists for older workflows, but it is deprecated. Prefer
 `on-request` for interactive work and `never` only for controlled
