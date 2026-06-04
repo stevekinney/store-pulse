@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "StorePulse — Operations Dashboard (Demo)",
   description:
-    "Demo operations dashboard for a fictional pet retail chain. Not production software.",
+    "Demo operations dashboard for a fictional retail chain. Not production software.",
 };
 
 export default function RootLayout({

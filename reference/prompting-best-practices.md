@@ -704,7 +704,7 @@ Otherwise it may write a polished but inaccurate guide.
 This is a strong feature prompt:
 
 ```text
-Add smart reorder suggestions to the Pet Store Operations Dashboard.
+Add smart reorder suggestions to the Store Pulse Operations Dashboard.
 
 First inspect the existing inventory, dashboard, store detail, and unit test
 structure. Match the repository conventions.

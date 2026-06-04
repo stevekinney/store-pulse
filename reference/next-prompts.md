@@ -7,7 +7,7 @@ inspection, produce a small plan, and end with verification.
 ## Smart Reorder Suggestions
 
 ```text
-Add smart reorder suggestions to the Pet Store Operations Dashboard.
+Add smart reorder suggestions to the Store Pulse Operations Dashboard.
 
 First inspect the existing inventory, dashboard, store detail, and unit test
 structure. Match the repository conventions.

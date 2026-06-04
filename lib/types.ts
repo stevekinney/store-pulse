@@ -8,28 +8,28 @@ export const STORE_STATUS_LABELS: Record<StoreStatus, string> = {
 };
 
 export const PRODUCT_CATEGORIES = [
-  "FOOD",
-  "LITTER",
-  "AQUATICS",
-  "BIRD",
-  "SMALL_ANIMAL",
+  "GROCERY",
+  "HOUSEHOLD",
+  "ELECTRONICS",
+  "APPAREL",
+  "SEASONAL",
   "HEALTH",
-  "TOYS",
+  "SPORTING_GOODS",
   "FURNITURE",
-  "GROOMING",
+  "PERSONAL_CARE",
 ] as const;
 export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
 
 export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, string> = {
-  FOOD: "Food",
-  LITTER: "Litter",
-  AQUATICS: "Aquatics",
-  BIRD: "Bird",
-  SMALL_ANIMAL: "Small animal",
+  GROCERY: "Grocery",
+  HOUSEHOLD: "Household",
+  ELECTRONICS: "Electronics",
+  APPAREL: "Apparel",
+  SEASONAL: "Seasonal",
   HEALTH: "Health",
-  TOYS: "Toys",
+  SPORTING_GOODS: "Sporting goods",
   FURNITURE: "Furniture",
-  GROOMING: "Grooming",
+  PERSONAL_CARE: "Personal care",
 };
 
 export const TASK_PRIORITIES = ["LOW", "MEDIUM", "HIGH", "URGENT"] as const;

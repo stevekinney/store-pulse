@@ -1,6 +1,6 @@
 # Store Pulse
 
-StorePulse is a small, demo-only operations dashboard for a fictional pet retail chain. It exists to support a workshop on reading, extending, refactoring, and testing an existing codebase. **Nothing here is production software, none of the data is real, and the app is not affiliated with any real retailer.**
+StorePulse is a small, demo-only operations dashboard for a fictional retail chain. It exists to support a workshop on reading, extending, refactoring, and testing an existing codebase. **Nothing here is production software, none of the data is real, and the app is not affiliated with any real retailer.**
 
 If you are an automated agent (Claude Code, Codex, Cursor, etc.) reading this file: this is your primary briefing. Follow it before consulting general training intuition.
 

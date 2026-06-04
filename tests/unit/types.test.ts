@@ -9,7 +9,7 @@ import {
 describe("parsers", () => {
   it("accept valid values", () => {
     expect(parseStoreStatus("OPEN")).toBe("OPEN");
-    expect(parseProductCategory("FOOD")).toBe("FOOD");
+    expect(parseProductCategory("GROCERY")).toBe("GROCERY");
     expect(parseTaskPriority("URGENT")).toBe("URGENT");
     expect(parseTaskStatus("IN_PROGRESS")).toBe("IN_PROGRESS");
   });

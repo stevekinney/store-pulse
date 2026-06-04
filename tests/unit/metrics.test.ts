@@ -40,7 +40,7 @@ const PRODUCT_ACTIVE: ProductRecord = {
   id: "p-active",
   sku: "A",
   name: "Active Product",
-  category: "FOOD",
+  category: "GROCERY",
   reorderThreshold: 5,
   isActive: true,
 };
