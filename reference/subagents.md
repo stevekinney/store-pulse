@@ -1,4 +1,4 @@
-# Codex Subagents
+# Using Subagents in Codex
 
 Subagents let Codex split a task into smaller agent threads. They are useful
 when a task has independent pieces that can run in parallel, or when a
@@ -10,6 +10,22 @@ whether the parent thread gives it a clear, bounded job.
 
 This guide was written against `codex-cli 0.130.0`. Exact subagent role names
 and feature flags can vary by installation, but the workflow principles hold.
+
+## Why Use Subagents
+
+Use subagents when the main thread would benefit from parallel focus. They are
+best for work that can be split cleanly: one agent reads logs, another reviews
+security risk, another inspects tests, while the main thread keeps the plan and
+integration decisions straight.
+
+Subagents are especially useful when you want to reduce context noise. Instead
+of filling the main thread with every search result, stack trace, and discarded
+hypothesis, a subagent can do the messy investigation and return the small
+summary the lead thread needs.
+
+Do not use subagents just to make a task feel more advanced. Use them when they
+create real parallel progress or bring a specialist review lens to a bounded
+piece of work.
 
 ## The Mental Model
 
@@ -79,18 +95,18 @@ work locally unless you authorize delegation.
 When subagents are enabled and Codex chooses to delegate, Codex handles several
 mechanics for you:
 
-| Codex behavior | What it means |
-| --- | --- |
-| Creates a separate agent thread | The subagent gets its own task and response stream. |
-| Tracks agent identity | Codex can refer back to a spawned agent by its identifier or task name. |
-| Inherits the default model | Spawned agents normally inherit the parent model unless a role or explicit override says otherwise. |
+| Codex behavior                  | What it means                                                                                          |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Creates a separate agent thread | The subagent gets its own task and response stream.                                                    |
+| Tracks agent identity           | Codex can refer back to a spawned agent by its identifier or task name.                                |
+| Inherits the default model      | Spawned agents normally inherit the parent model unless a role or explicit override says otherwise.    |
 | Uses the available tool surface | Spawned agents generally receive the same available tools, with role and configuration limits applied. |
-| Passes selected context | Codex can start the agent with a fresh prompt or fork the current conversation context when needed. |
-| Sends follow-up messages | Codex can message a running agent, optionally interrupting it for an urgent correction. |
-| Waits for results | Codex can wait for one or more agents when their output is needed. |
-| Surfaces completion | Finished agents return a final status and may include their final answer. |
-| Lets you switch threads | `/agent` opens the agent-thread picker in interactive Codex. |
-| Can close agents | Codex can close agents that are no longer needed so they do not keep running. |
+| Passes selected context         | Codex can start the agent with a fresh prompt or fork the current conversation context when needed.    |
+| Sends follow-up messages        | Codex can message a running agent, optionally interrupting it for an urgent correction.                |
+| Waits for results               | Codex can wait for one or more agents when their output is needed.                                     |
+| Surfaces completion             | Finished agents return a final status and may include their final answer.                              |
+| Lets you switch threads         | `/agent` opens the agent-thread picker in interactive Codex.                                           |
+| Can close agents                | Codex can close agents that are no longer needed so they do not keep running.                          |
 
 Codex also uses the current workspace, permission profile, available tools, and
 repository instructions to shape what the subagent can do.
@@ -122,13 +138,13 @@ The parent thread still needs to review the result and run the real gates.
 
 These are different tools:
 
-| Tool | Use it for | It does not do |
-| --- | --- | --- |
-| **Subagent** | Parallel codebase work, specialist review, independent investigation, bounded implementation slices. | Automatically create Git isolation or make decisions safe. |
-| **Git worktree** | Filesystem isolation for branches, experiments, cloud patches, and parallel local sessions. | Provide a separate thinking agent by itself. |
-| **`/fork` or `codex fork`** | Branching conversation history to try a different reasoning path. | Create a Git branch, worktree, or parallel worker. |
-| **`/side`** | Quick side questions that should not derail the main thread. | Run a full delegated implementation workflow. |
-| **Codex Cloud task** | Remote task execution and cloud-generated diffs. | Replace local review, integration, or verification. |
+| Tool                        | Use it for                                                                                           | It does not do                                             |
+| --------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **Subagent**                | Parallel codebase work, specialist review, independent investigation, bounded implementation slices. | Automatically create Git isolation or make decisions safe. |
+| **Git worktree**            | Filesystem isolation for branches, experiments, cloud patches, and parallel local sessions.          | Provide a separate thinking agent by itself.               |
+| **`/fork` or `codex fork`** | Branching conversation history to try a different reasoning path.                                    | Create a Git branch, worktree, or parallel worker.         |
+| **`/side`**                 | Quick side questions that should not derail the main thread.                                         | Run a full delegated implementation workflow.              |
+| **Codex Cloud task**        | Remote task execution and cloud-generated diffs.                                                     | Replace local review, integration, or verification.        |
 
 For serious parallel implementation, combine tools intentionally: use Git
 worktrees for filesystem isolation and subagents for bounded delegated work
@@ -196,25 +212,70 @@ Subagents are a poor fit for:
 If a task cannot be verified independently, it is usually not a good subagent
 task.
 
+## Concrete Subagent Use Cases
+
+Use subagents when the delegated work has a clean boundary and the parent thread
+can verify the result.
+
+| Use case                    | Subagent role    | Scope                                                                        | Parent thread keeps                                       |
+| --------------------------- | ---------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Smart reorder discovery     | `explorer`       | Read low-stock data flow and relevant tests. No edits.                       | Feature shape and implementation decision.                |
+| Reorder test design         | `testing-expert` | Propose cases for `calculateSuggestedReorderQuantity` and domain edge cases. | Which tests to add and final implementation.              |
+| Incident timeline page flow | `explorer`       | Inspect store detail data loading and rendering. No schema edits.            | Prisma model, migration, seed, and integration decisions. |
+| Operations assistant helper | `worker`         | Own one pure helper file and unit test file after the interface is defined.  | Helper contract, UI integration, and final gates.         |
+| Final diff review           | `pr-reviewer`    | Review the current diff for bugs, regressions, and missing tests. No edits.  | Whether to patch, rerun gates, and summarize completion.  |
+
+Concrete prompt:
+
+```text
+Use one explorer subagent for the smart reorder feature.
+
+Task:
+Read `lib/inventory.ts`, `lib/metrics.ts`, `app/page.tsx`,
+`app/stores/[id]/page.tsx`, and the related unit tests. Do not edit files.
+
+Output:
+Return the low-stock data flow, likely integration points, and the domain rules
+that could be broken. Keep the result under 20 lines.
+
+The main thread will choose the implementation plan and make all edits.
+```
+
+Concrete review prompt:
+
+```text
+Use one pr-reviewer subagent to review the current smart reorder diff. It
+should not edit files.
+
+Focus on:
+- incorrect reorder quantity math
+- missing inactive-product or closed-store coverage
+- UI suggestions showing for the wrong rows
+- scope drift outside the feature
+
+Return findings first with file references. If there are no blockers, say that
+clearly and name any residual test risk.
+```
+
 ## Choosing Agent Roles
 
 Available roles depend on the Codex installation. In this environment, common
 roles include:
 
-| Role | Use it when |
-| --- | --- |
-| `explorer` | You need a specific read-only answer about the codebase. |
-| `worker` | You want a bounded code change with clear file ownership. |
-| `testing-expert` | You need test coverage, mocking strategy, or flaky test debugging. |
-| `pr-reviewer` | You want a diff reviewed for correctness, regressions, and missing tests. |
-| `security-reviewer` | The change touches user input, external commands, paths, authentication, or secrets. |
-| `typescript-expert` | The task depends on advanced TypeScript types or API typing. |
-| `frontend-architect` | The task involves frontend architecture, rendering strategy, performance, or accessibility. |
-| `ux-designer` | The task needs interface, interaction, or responsive layout judgment. |
-| `simplicity-engineer` | A plan or refactor may be over-engineered. |
-| `junior-engineer` | A plan needs ambiguity and edge-case review before implementation. |
-| `log-analyzer` | You have a large failure log or stack trace. |
-| `product-manager` | You need feature scope, prioritization, or acceptance criteria. |
+| Role                  | Use it when                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| `explorer`            | You need a specific read-only answer about the codebase.                                    |
+| `worker`              | You want a bounded code change with clear file ownership.                                   |
+| `testing-expert`      | You need test coverage, mocking strategy, or flaky test debugging.                          |
+| `pr-reviewer`         | You want a diff reviewed for correctness, regressions, and missing tests.                   |
+| `security-reviewer`   | The change touches user input, external commands, paths, authentication, or secrets.        |
+| `typescript-expert`   | The task depends on advanced TypeScript types or API typing.                                |
+| `frontend-architect`  | The task involves frontend architecture, rendering strategy, performance, or accessibility. |
+| `ux-designer`         | The task needs interface, interaction, or responsive layout judgment.                       |
+| `simplicity-engineer` | A plan or refactor may be over-engineered.                                                  |
+| `junior-engineer`     | A plan needs ambiguity and edge-case review before implementation.                          |
+| `log-analyzer`        | You have a large failure log or stack trace.                                                |
+| `product-manager`     | You need feature scope, prioritization, or acceptance criteria.                             |
 
 Pick the lightest role that can do the job. A specialist role is helpful only
 when the specialization matches the task.
@@ -223,14 +284,14 @@ when the specialization matches the task.
 
 For a Store Pulse feature:
 
-| Situation | Better role | Why |
-| --- | --- | --- |
-| "Where is low-stock logic calculated?" | `explorer` | Read-only codebase question. |
-| "Add a pure reorder calculation helper and unit tests." | `worker` | Bounded implementation with a narrow write scope. |
-| "Are these tests enough for inactive products and closed stores?" | `testing-expert` | Test coverage and edge cases. |
-| "Does this Prisma schema migration match the feature?" | `pr-reviewer` | Change review against implementation intent. |
-| "Could the assistant panel expose unsafe user input?" | `security-reviewer` | Security-specific concern. |
-| "Is this dashboard panel too complex for a workshop demo?" | `simplicity-engineer` | Scope and complexity review. |
+| Situation                                                         | Better role           | Why                                               |
+| ----------------------------------------------------------------- | --------------------- | ------------------------------------------------- |
+| "Where is low-stock logic calculated?"                            | `explorer`            | Read-only codebase question.                      |
+| "Add a pure reorder calculation helper and unit tests."           | `worker`              | Bounded implementation with a narrow write scope. |
+| "Are these tests enough for inactive products and closed stores?" | `testing-expert`      | Test coverage and edge cases.                     |
+| "Does this Prisma schema migration match the feature?"            | `pr-reviewer`         | Change review against implementation intent.      |
+| "Could the assistant panel expose unsafe user input?"             | `security-reviewer`   | Security-specific concern.                        |
+| "Is this dashboard panel too complex for a workshop demo?"        | `simplicity-engineer` | Scope and complexity review.                      |
 
 Do not pick a role because the name sounds impressive. Pick it because it
 matches the output you need.
@@ -712,7 +773,8 @@ A typical Codex agent definition looks like this:
 ```toml
 name = "store-pulse-metrics-reviewer"
 description = "Reviews Store Pulse metric and inventory changes for domain-rule regressions, especially inactive products, closed stores, and maintenance stores."
-model = "gpt-5.3-codex-spark"
+# Optional: pin a model from the current Codex model picker.
+# model = "gpt-5.5"
 model_reasoning_effort = "low"
 sandbox_mode = "read-only"
 developer_instructions = '''

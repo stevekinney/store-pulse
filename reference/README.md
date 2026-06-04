@@ -1,20 +1,92 @@
 # Store Pulse Codex Reference
 
-These documents support the Store Pulse workshop. They are ordered for teaching: each one builds on the ideas in the documents above it. If you are running the workshop, follow this sequence. If you are reading on your own, the same order works as a self-study path.
+These documents support the Store Pulse Codex workshop. The main workshop is a
+one-hour follow-along run that takes one feature from repository inspection to
+verified diff.
 
-## Teaching Order
+## Main Workshop Path
 
-1. [Getting Started](./getting-started.md): Workshop preflight. Get every participant into the same working state—repository cloned, Codex installed, environment verified—before anything else.
-2. [Codex Safety Model](./safety.md): How Codex scopes its power through sandboxing, approvals, and trust. Understand the guardrails before you start handing Codex real work.
-3. [Codex Configuration](./configuration.md): The `config.toml` file and persistent local settings. Model defaults, sandboxing, MCP servers, and profiles all live here.
-4. [Codex Slash Commands](./commands.md): In-session controls for changing models, inspecting context, reviewing changes, and managing the current conversation.
-5. [AGENTS.md Best Practices](./agents-md-best-practices.md): The project briefing that tells Codex how to work safely and effectively in _this_ repository before it guesses from training data.
-6. [Context Management with Codex](./context-management.md): How to feed Codex the right context—and only the right context. The difference between a focused collaborator and a model guessing from stale fragments.
-7. [Prompting Best Practices for Codex](./prompting-best-practices.md): Treating the prompt as a working agreement: the job, the boundaries, the evidence Codex should gather, and the signals that prove the task is done.
-8. [Review and Verification with Codex](./review-and-verification.md): Implementation is not done when Codex stops typing. How to confirm the diff is understood, the right checks pass, and remaining risk is explicit.
-9. [Using Hooks with Codex](./hooks.md): Local commands that Codex runs at specific lifecycle points. Use them to inject context, enforce guardrails, and catch workflow mistakes early.
-10. [Codex Subagents](./subagents.md): Splitting a task into smaller agent threads—for parallel work or specialist reviewers running alongside the main thread.
-11. [Git Worktrees with Codex](./worktrees.md): Multiple working directories from one repository, each with its own branch, dev server, and Codex session. The substrate for parallel work.
-12. [Store Pulse Skill Ideas](./skills.md): Operational briefs that help Codex remember _this_ project. Skills are most useful where the same context or failure mode keeps recurring.
-13. [Troubleshooting Codex Sessions](./troubleshooting.md): Recovering deliberately when things go wrong, instead of stacking another speculative patch on top of the problem.
-14. [Next Feature Prompts](./next-prompts.md): Self-contained feature requests for participants to hand to Codex. Use these once everything above is in place.
+Start here:
+
+1. [One-Hour Store Pulse Codex Workshop](./one-hour-workshop.md): The primary
+   60-minute runbook. Participants use Codex to add smart reorder suggestions
+   while practicing inspection, planning, TDD, implementation, verification,
+   review, and final handoff.
+2. [Getting Started](./getting-started.md): Setup and preflight. Use this before
+   the workshop when participants need to install dependencies, verify the local
+   database, or confirm Codex session state.
+3. [Next Feature Prompts](./next-prompts.md): The canonical smart reorder prompt
+   plus optional extension prompts for participants who finish early or want
+   extra practice.
+
+The one-hour workshop should not require participants to read every reference
+document below. Use the extended references only when the facilitator wants to
+explain a concept in more depth or debug a specific failure.
+
+## Codex Capabilities In Depth
+
+These are the deeper Codex topics most useful after the one-hour feature run:
+
+- [Using Subagents in Codex](./subagents.md): Parallel agent threads,
+  delegation boundaries, ownership rules, review patterns, and Store Pulse
+  examples.
+- [Using Hooks with Codex](./hooks.md): Lifecycle hooks, matchers, payloads,
+  trust review, local scripts, testing hooks, and workshop-safe hook ideas.
+- [Using Environments with Codex](./environments.md): Cloud environments,
+  local environments, setup scripts, secrets, caching, internet access, and
+  Store Pulse environment defaults.
+- [Computer Use with Codex](./computer-use.md): When Codex should operate
+  graphical apps, how permissions work, what it can see and do, and how to keep
+  desktop tasks scoped.
+- [The Codex Chrome Extension](./chrome-extension.md): When to use Chrome
+  instead of the in-app browser, setup, website permissions, browser history,
+  file uploads, and troubleshooting.
+- [Codex Settings You Want to Know About and Might Want to Change](./settings.md):
+  App settings, profiles, `config.toml`, Git settings, MCP, browser use,
+  Computer Use, memories, and workshop-safe defaults.
+- [`config.toml` Deep Dive](./config-toml-deep-dive.md): Configuration
+  precedence, user versus project config, profile files, feature flags,
+  sandboxing, shell environment policy, MCP, hooks, and Store Pulse examples.
+- [Best Practices for Skills with Codex](./skills.md): How skills trigger, where
+  they live, how they differ from plugins, and Store Pulse-specific skill
+  examples.
+- [Useful Plugins for Codex](./plugins.md): Browser, Chrome, GitHub, Codex
+  Security, Google Workspace, Slack, Gmail, Calendar, Data Analytics, Product
+  Design, Sites, and when to avoid plugins.
+- [Using Automations with Codex](./automations.md): Thread automations,
+  standalone automations, worktree isolation, sandbox behavior, durable prompts,
+  testing, and cleanup.
+- [Plan Mode and Goals in Codex](./plan-mode-and-goals.md): When to use
+  `/plan`, how to shape a plan before implementation, how to enable the
+  `features.goals` flag, and how to use `/goal` for persistent objectives.
+
+## Extended Reference
+
+- [Codex Safety Model](./safety.md): Sandboxing, approvals, network access, and
+  trust boundaries.
+- [Codex Configuration](./configuration.md): Local `config.toml` settings,
+  profiles, features, MCP servers, and project documentation discovery.
+- [Codex Slash Commands](./commands.md): In-session controls such as `/status`,
+  `/diff`, `/review`, `/compact`, and `/permissions`.
+- [AGENTS.md Best Practices](./agents-md-best-practices.md): How to write a
+  project briefing that gives Codex durable repository truth.
+- [Context Management with Codex](./context-management.md): How to keep Codex
+  focused on the right files, evidence, and session state.
+- [Prompting Best Practices for Codex](./prompting-best-practices.md): Prompt
+  patterns for planning, implementation, debugging, review, and documentation.
+- [Review and Verification with Codex](./review-and-verification.md): How to
+  inspect a diff, choose quality gates, diagnose failures, and finish with a
+  known repository state.
+- [Using Hooks with Codex](./hooks.md): Lifecycle commands that can inject
+  context, enforce guardrails, or remind participants to verify work.
+- [Using Subagents in Codex](./subagents.md): Splitting bounded work across
+  additional agent threads when a larger task justifies it.
+- [Git Worktrees with Codex](./worktrees.md): Isolating branches, Codex
+  sessions, and dev servers in separate working directories.
+- [Troubleshooting Codex Sessions](./troubleshooting.md): Recovery prompts and
+  diagnosis paths when setup, tests, build, Prisma, or Codex context goes wrong.
+
+## Facilitator Rule Of Thumb
+
+Use the main path for the hour. Pull in the extended reference only when it
+helps answer a question participants are already asking.

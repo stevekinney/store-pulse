@@ -4,13 +4,19 @@ These prompts are designed for workshop participants to hand to Codex as
 self-contained feature requests. Each one should start with repository
 inspection, produce a small plan, and end with verification.
 
-## Smart Reorder Suggestions
+For the one-hour workshop, use **Smart Reorder Suggestions**. It is the
+canonical feature because it demonstrates the full Codex loop without requiring
+a schema migration: inspect, plan, test, implement, verify, review, and
+summarize. The other prompts are optional extensions for extra practice.
+
+## Canonical One-Hour Feature: Smart Reorder Suggestions
 
 ```text
 Add smart reorder suggestions to the Store Pulse Operations Dashboard.
 
 First inspect the existing inventory, dashboard, store detail, and unit test
-structure. Match the repository conventions.
+structure. Do not edit files until you have explained the current data flow and
+made a concise plan. Match the repository conventions.
 
 Create a pure `calculateSuggestedReorderQuantity` helper in `lib/inventory.ts`.
 For low-stock active products, suggest enough units to bring projected stock
@@ -18,12 +24,41 @@ back to twice the reorder threshold:
 
 max(0, reorderThreshold * 2 - quantityOnHand - quantityOnOrder)
 
+Use TDD where practical: add failing unit coverage for
+`calculateSuggestedReorderQuantity` before implementing the helper.
+
 Show the suggestion in the dashboard urgent low-stock list and in the store
 detail inventory table. Preserve the existing domain rules: inactive products
 do not count as low stock, closed stores stay excluded from dashboard low-stock
 metrics, and maintenance stores remain included.
 
-Add unit tests for the calculation logic and any dashboard aggregation changes.
+Likely files to inspect include:
+
+- `lib/inventory.ts`
+- `lib/metrics.ts`
+- `lib/dashboard.ts`
+- `app/page.tsx`
+- `app/stores/[id]/page.tsx`
+- `tests/unit/inventory.test.ts`
+- `tests/unit/metrics.test.ts`
+
+Treat that list as a starting point, not a substitute for repository
+inspection.
+
+Acceptance criteria:
+
+- `calculateSuggestedReorderQuantity` returns `0` when projected stock already
+  meets or exceeds twice the reorder threshold.
+- The helper subtracts both `quantityOnHand` and `quantityOnOrder`.
+- Dashboard urgent low-stock rows show suggested reorder quantities for
+  low-stock active products.
+- Store detail inventory rows show suggested reorder quantities for low-stock
+  active products.
+- Inactive products do not count as low stock.
+- Closed stores stay excluded from dashboard low-stock metrics.
+- Maintenance stores remain included.
+- No Prisma migration, external API call, component library, or client-side
+  state is added.
 
 Verification gates:
 
@@ -35,7 +70,9 @@ Completion signal: the dashboard and store detail page display reorder
 suggestions for low-stock active products, and all verification gates pass.
 ```
 
-## Store Incident Timeline
+## Optional Extension Prompts
+
+### Store Incident Timeline
 
 ```text
 Add an incident timeline to each store detail page.
@@ -68,7 +105,7 @@ chronological incident timeline on its detail page, and all verification gates
 pass.
 ```
 
-## Operations Assistant Panel
+### Operations Assistant Panel
 
 ```text
 Add a simple operations assistant panel to the dashboard.
@@ -103,7 +140,7 @@ deterministic answers for the predefined questions, and all verification gates
 pass.
 ```
 
-## Inventory Search and Filtering
+### Inventory Search and Filtering
 
 ```text
 Add inventory search and filtering across stores.
@@ -132,7 +169,7 @@ Completion signal: users can navigate to an inventory page, combine search and
 filters, reload the URL, and see the same filtered results.
 ```
 
-## Regional Reporting Dashboard
+### Regional Reporting Dashboard
 
 ```text
 Add a regional reporting dashboard.
@@ -160,7 +197,7 @@ Completion signal: `/regions` renders one row per region with correct rollup
 metrics, and all verification gates pass.
 ```
 
-## Task Assignment
+### Task Assignment
 
 ```text
 Add task assignment to named team members.
@@ -189,7 +226,7 @@ Completion signal: seeded tasks show realistic assignees wherever tasks are
 listed, and all verification gates pass.
 ```
 
-## Product Category Low-Stock Filters
+### Product Category Low-Stock Filters
 
 ```text
 Add product category filters to low-stock reporting.
@@ -216,7 +253,7 @@ changing the underlying headline metric semantics, and all verification gates
 pass.
 ```
 
-## Complete Tasks From Store Detail
+### Complete Tasks From Store Detail
 
 ```text
 Add a complete-task action to the store detail page.

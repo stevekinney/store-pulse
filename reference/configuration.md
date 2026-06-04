@@ -17,6 +17,10 @@ For this workshop, the useful mental model is:
 
 This guide is written against `codex-cli 0.130.0`.
 
+For a fuller, current walkthrough of `config.toml` precedence, profile files,
+feature flags, sandboxing, MCP servers, hooks, and Store Pulse examples, see
+`reference/config-toml-deep-dive.md`.
+
 ## What `config.toml` Is
 
 `config.toml` is a TOML file that Codex loads before it starts a session. It is
@@ -80,13 +84,15 @@ Codex combines configuration from several layers. When the same setting appears
 in more than one place, the more specific layer wins.
 
 ```text
-CLI flags
+CLI flags and -c overrides
 ↓
-Environment variables
+Project .codex/config.toml files, closest to current directory wins
 ↓
-Project .codex/config.toml
+Profile file selected with --profile, such as ~/.codex/review.config.toml
 ↓
 Global ~/.codex/config.toml
+↓
+System /etc/codex/config.toml, when present
 ↓
 Built-in defaults
 ```
@@ -94,11 +100,11 @@ Built-in defaults
 In practice:
 
 - Built-in defaults provide the baseline behavior.
+- System configuration can provide machine-level defaults.
 - Global user configuration in `~/.codex/config.toml` sets your usual defaults.
+- Profile files layer focused workflow overrides above the user configuration.
 - Trusted project configuration in `.codex/config.toml` can add narrow
   project-local settings.
-- Environment variables can override file-based settings for the current shell
-  environment.
 - CLI flags and `-c` session overrides win for the current invocation.
 - Managed or administrative requirements may still constrain what lower layers
   can do.
@@ -192,20 +198,26 @@ official documentation, not a copied value from old workshop material.
 Profiles are named bundles of settings. They are the cleanest way to switch
 between workflows without repeatedly editing the base configuration.
 
-```toml
-profile = "workshop"
+Modern Codex profiles live in separate files under `~/.codex/`. Select them
+with `--profile <name>`. Do not put `[profiles.<name>]` tables in
+`config.toml` for current Codex builds.
 
-[profiles.workshop]
+```toml
+# ~/.codex/workshop.config.toml
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 approval_policy = "on-request"
+```
 
-[profiles.review]
+```toml
+# ~/.codex/review.config.toml
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 approval_policy = "untrusted"
+```
 
-[profiles.automation]
+```toml
+# ~/.codex/automation.config.toml
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 approval_policy = "never"
@@ -217,12 +229,26 @@ Use a profile for a durable mode of work:
 - `review` for read-only code review.
 - `automation` for non-interactive runs where the environment already supplies
   guardrails.
+- `setup` for short-lived dependency installation or browser installation.
+- `research` for official documentation lookup that needs temporary web access.
 
 Run a profile with:
 
 ```bash
 codex --profile review
 ```
+
+Concrete Store Pulse examples:
+
+- Use `workshop` while participants implement smart reorder suggestions.
+- Use `review` when asking Codex to inspect a diff without editing files.
+- Use `setup` only long enough to run `npm install` or
+  `npx playwright install chromium`.
+- Use `automation` only after the automation prompt has been tested manually.
+
+Profiles are not a place for project truth. Put Store Pulse rules, commands,
+and domain semantics in `AGENTS.md`; put local permission and tool posture in
+profiles.
 
 ## Sandbox And Approvals
 
@@ -606,7 +632,7 @@ notification_condition = "unfocused"
 Use this when Codex should review code without making changes.
 
 ```toml
-[profiles.review]
+# ~/.codex/review.config.toml
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 approval_policy = "untrusted"
@@ -624,7 +650,7 @@ Use this only when the surrounding environment is already constrained and the
 task is safe to run without interactive approvals.
 
 ```toml
-[profiles.automation]
+# ~/.codex/automation.config.toml
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 approval_policy = "never"
@@ -641,11 +667,11 @@ codex --profile automation exec "Run npm test and summarize the result."
 Use this when the task depends on current external documentation.
 
 ```toml
-[profiles.research]
+# ~/.codex/research.config.toml
 model_reasoning_effort = "medium"
 web_search = "live"
 
-[profiles.research.tools.web_search]
+[tools.web_search]
 context_size = "medium"
 allowed_domains = ["developers.openai.com"]
 ```

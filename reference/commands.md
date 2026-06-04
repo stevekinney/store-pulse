@@ -226,9 +226,21 @@ Use Plan mode when the task has design choices, schema changes, broad
 refactors, or unclear ownership. Exit planning only after the plan names files,
 tests, commands, risks, and a completion signal.
 
+Good Store Pulse use:
+
+```text
+/plan Add smart reorder suggestions. Inspect the dashboard, store detail page,
+inventory helpers, metrics helpers, and unit tests before proposing a plan. Do
+not edit files yet.
+```
+
+See `reference/plan-mode-and-goals.md` for the full Plan Mode workflow.
+
 ### `/goal`
 
-Sets or opens the goal for a long-running task, when goals are enabled.
+Sets or opens the goal for a long-running task, when the goals feature is
+enabled. The command is singular `/goal`; the feature flag is plural
+`features.goals`.
 
 Common forms:
 
@@ -242,6 +254,23 @@ Common forms:
 
 Use it when Codex is expected to keep working across multiple turns or
 checkpoints. A good goal is outcome-oriented and verifiable.
+
+Enable it if the command is missing:
+
+```toml
+[features]
+goals = true
+```
+
+Good Store Pulse use:
+
+```text
+/goal Finish the smart reorder suggestions feature. Preserve low-stock domain
+rules and stop only after npm run test, npm run lint, and npm run build pass.
+```
+
+See `reference/plan-mode-and-goals.md` for goal-writing examples and how to
+combine `/plan` with `/goal`.
 
 ## Conversation Management
 

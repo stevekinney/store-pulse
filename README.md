@@ -1,6 +1,9 @@
 # StorePulse — Operations Dashboard
 
-[Workshop Slides](./public/slides.pdf)
+## Workshop materials
+
+- [One-hour workshop runbook](./reference/one-hour-workshop.md)
+- [Workshop slides](./public/slides.pdf)
 
 A small, demo-only operations dashboard for a fictional retail chain. It is
 intended for a workshop on using Codex to read, extend, refactor, and test an

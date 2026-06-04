@@ -158,7 +158,7 @@ documentation while keeping unrelated filesystem locations out of scope.
 Use `read-only` when the job is investigation, review, or planning.
 
 ```toml
-[profiles.review]
+# ~/.codex/review.config.toml
 sandbox_mode = "read-only"
 approval_policy = "untrusted"
 model_reasoning_effort = "high"
@@ -265,7 +265,7 @@ Best practice for Store Pulse:
 Example setup profile:
 
 ```toml
-[profiles.setup]
+# ~/.codex/setup.config.toml
 sandbox_mode = "workspace-write"
 approval_policy = "on-request"
 ```
@@ -365,7 +365,7 @@ before higher-risk actions.
 For review-only work:
 
 ```toml
-[profiles.review]
+# ~/.codex/review.config.toml
 approval_policy = "untrusted"
 sandbox_mode = "read-only"
 model_reasoning_effort = "high"
@@ -374,7 +374,7 @@ model_reasoning_effort = "high"
 For setup work that needs package downloads:
 
 ```toml
-[profiles.setup]
+# ~/.codex/setup.config.toml
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 ```

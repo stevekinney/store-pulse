@@ -10,6 +10,21 @@ small pieces of context at the right moment.**
 
 This guide is written against `codex-cli 0.130.0`.
 
+## Why Use Hooks
+
+Use hooks when a rule is important enough to enforce mechanically but small
+enough to check locally. Prompts and `AGENTS.md` are excellent for guidance;
+hooks are for the moments where Codex should receive context, be warned, or be
+blocked at a predictable lifecycle point.
+
+Good hooks make the happy path easier. They can remind Codex which verification
+gates matter, prevent bypass commands, or attach task context before the model
+starts working. That keeps the workflow consistent across participants without
+turning every prompt into a long policy document.
+
+Do not use hooks as a hidden replacement for tests, review, or judgment. A good
+hook is visible, fast, deterministic, and easy to explain.
+
 ## The Mental Model
 
 A hook is a command with three pieces:
@@ -65,6 +80,30 @@ Poor hook candidates:
 - Sending Slack messages, email, or external service requests without explicit
   user approval.
 - Hiding important failures behind best-effort automation.
+
+## Concrete Hook Use Cases
+
+Hooks are not only for blocking risky commands. The most useful workshop hooks
+often add small pieces of context at the moment Codex needs them.
+
+| Use case | Event | What the hook does |
+| --- | --- | --- |
+| Add current workshop context | `UserPromptSubmit` | Reads a local task note and adds concise context before Codex plans. |
+| Remind Codex of Store Pulse gates | `UserPromptSubmit` | Adds `npm run lint`, `npm run test`, and `npm run build` when the prompt asks for implementation. |
+| Block verification bypasses | `PreToolUse` on `Bash` | Blocks `--no-verify`, force pushes, and destructive resets. |
+| Add failure context | `PostToolUse` on `Bash` | Summarizes the first failing test line after a failed command. |
+| Stop before an incomplete handoff | `Stop` | Asks Codex to continue when source files changed but no requested gate ran. |
+
+Concrete Store Pulse examples:
+
+- **During the smart reorder workshop:** A `UserPromptSubmit` hook can add
+  "this is the one-hour feature run; do not implement unrelated feature
+  prompts; preserve closed-store and inactive-product rules."
+- **During review:** A `PostToolUse` hook can summarize `npm run test` failure
+  output so Codex diagnoses the first useful error instead of reacting to the
+  final summary line.
+- **During commits:** A `PreToolUse` hook can block `git commit --no-verify`
+  and explain that hook bypasses are not allowed in this repository.
 
 ## Enable Hooks
 
@@ -383,6 +422,8 @@ These are deliberately modest examples that fit this repository.
 ### Add Repository Context
 
 Use `UserPromptSubmit` to remind Codex of the Store Pulse commands and scope.
+This is context injection, not blocking. The hook lets the prompt stay short
+while Codex still receives the local facts that are easy to forget.
 
 ```json
 {
@@ -403,6 +444,23 @@ Use `UserPromptSubmit` to remind Codex of the Store Pulse commands and scope.
 }
 ```
 
+This version always injects the same repository-level context. That is useful
+for a workshop, but you can make it more concrete by reading a local task note
+when one exists.
+
+`/Users/you/Developer/store-pulse/.codex/current-workshop-focus.md`
+
+```markdown
+# Current Store Pulse Focus
+
+We are running the one-hour smart reorder workshop.
+
+- Do not implement other feature prompts.
+- Preserve inactive-product, closed-store, and maintenance-store semantics.
+- Prefer TDD for `calculateSuggestedReorderQuantity`.
+- Finish with `npm run test`, `npm run lint`, and `npm run build`.
+```
+
 ```python
 #!/usr/bin/env python3
 import json
@@ -415,11 +473,18 @@ workspace = pathlib.Path(payload.get("cwd", ""))
 if workspace.name != "store-pulse":
     raise SystemExit(0)
 
+focus_file = workspace / ".codex" / "current-workshop-focus.md"
+
 context = (
     "Store Pulse is a Next.js 16, Prisma, SQLite, Tailwind v4 workshop app. "
     "Use npm, keep database access in lib/, prefer pure helpers for unit-tested "
     "logic, and verify with npm run lint, npm run test, and npm run build."
 )
+
+if focus_file.exists():
+    focus = focus_file.read_text(encoding="utf-8").strip()
+    if focus:
+        context = f"{context}\n\nCurrent workshop focus:\n{focus}"
 
 print(json.dumps({
     "hookSpecificOutput": {
@@ -429,7 +494,8 @@ print(json.dumps({
 }))
 ```
 
-This is intentionally short. It nudges Codex without replacing `AGENTS.md`.
+This is intentionally short. It nudges Codex without replacing `AGENTS.md`, and
+it keeps mutable session-specific context in a file instead of the conversation.
 
 ### Block Verification Bypasses
 

@@ -124,3 +124,7 @@ This is a workshop demo. Do _not_ add:
 - Production deployment infrastructure.
 
 Workshop extension points the codebase _is_ structured for live in the README under "Future feature ideas." Stay inside that envelope unless the user explicitly broadens scope.
+
+## Imported Claude Cowork project instructions
+
+This repository is a demonstration application for a session on using Codex. The application only exists in order to give us something to work on. The main content is in `./reference` and that's predominately what we will be working with.

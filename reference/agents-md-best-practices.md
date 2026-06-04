@@ -374,9 +374,9 @@ Briefly explain what this repository is and what it is not.
 
 ## Everyday commands
 
-| Command | What it does |
-| --- | --- |
-| `<command>` | <purpose> |
+| Command     | What it does |
+| ----------- | ------------ |
+| `<command>` | <purpose>    |
 
 ## Project layout
 

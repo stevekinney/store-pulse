@@ -1,11 +1,126 @@
-# Store Pulse Skill Ideas
+# Best Practices for Skills with Codex
 
-Skills are most useful when the same context, workflow, or failure mode comes
-up repeatedly. For Store Pulse, the best skills are not generic "write React"
-guides. They are small operational briefs that help Codex remember this
-repository's local rules: Next.js 16 App Router, Prisma 6, strict TypeScript,
-Tailwind v4, pure helper tests, seeded demo data, and the dashboard's status
-semantics.
+**Skills** package reusable instructions, references, and optional scripts so
+Codex can follow a task-specific workflow reliably. They are most useful when
+the same context, workflow, or failure mode comes up repeatedly.
+
+For Store Pulse, the best skills are not generic "write React" guides. They are
+small operational briefs that help Codex remember this repository's local
+rules: Next.js 16 App Router, Prisma 6, strict TypeScript, Tailwind v4, pure
+helper tests, seeded demo data, and the dashboard's status semantics.
+
+## Why Use Skills
+
+Use skills when a workflow repeats often enough that you want Codex to follow
+the same steps every time. A skill keeps the durable process in a file instead
+of forcing every prompt to restate the same inspection path, local rules, and
+verification gates.
+
+Skills are especially useful for project-specific work where general model
+knowledge is not enough. They can point Codex at the right files, name the
+failure modes that matter, and include helper scripts or references only when a
+task needs them.
+
+Do not create a skill for a one-off request. Start with a prompt; promote the
+workflow to a skill after the pattern repeats.
+
+## How Codex Uses Skills
+
+Codex starts with a lightweight list of available skills: name, description,
+and file path. It loads the full `SKILL.md` only when the task matches the
+skill or the user invokes it directly.
+
+That means the `description` matters. It is the trigger surface.
+
+Good descriptions:
+
+- Name the task shape.
+- Include likely trigger words.
+- Say when the skill should not apply if the boundary is easy to confuse.
+- Stay short enough to survive description trimming when many skills exist.
+
+Weak descriptions:
+
+- "Use for coding."
+- "Helps with this repository."
+- "General best practices."
+- A long paragraph that hides the actual trigger.
+
+Skills can activate in two ways:
+
+- **Explicit invocation:** The user names the skill, often with `$skill-name`
+  or through `/skills`.
+- **Implicit invocation:** Codex chooses the skill because the task matches the
+  skill description.
+
+When precision matters in a workshop, prefer explicit invocation so
+participants can see which workflow Codex is using.
+
+## Where Skills Live
+
+Codex can discover skills from repository, user, admin, and system locations.
+
+Use the smallest scope that matches the workflow:
+
+- **Repository skills:** Use for workflows that belong to one project or
+  folder. Check them in only when they are safe for everyone.
+- **User skills:** Use for personal workflows that apply across repositories.
+- **Admin skills:** Use for organization or machine-level defaults.
+- **System skills:** Built into Codex.
+
+Repository skills are useful for Store Pulse because they can point at
+project-specific files and commands without relying on a participant's personal
+Codex memory.
+
+## Skills Versus Plugins
+
+Use a skill when you need a reusable workflow. Use a plugin when you need to
+distribute that workflow or bundle it with tools, MCP servers, app connectors,
+hooks, or assets.
+
+Practical rule:
+
+- Start with a local skill while the workflow is still evolving.
+- Package a plugin when the workflow should be shared, installed, versioned, or
+  combined with integrations.
+
+See `reference/plugins.md` for plugin selection and safety guidance.
+
+## Concrete Skill Use Cases
+
+Use a skill when the same workflow will come up more than once and the workflow
+has clear inputs, outputs, and verification gates.
+
+| Use case                   | Skill shape                           | Why it helps                                                                          |
+| -------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------- |
+| Smart reorder feature work | `store-pulse-feature-implementation`  | Keeps Codex on the inspect, plan, test, implement, verify loop.                       |
+| Dashboard metric changes   | `store-pulse-domain-semantics`        | Prevents regressions around inactive products, closed stores, and maintenance stores. |
+| Prisma-backed features     | `store-pulse-prisma-change`           | Makes migrations, seed data, generated types, and verification gates explicit.        |
+| Workshop prompt writing    | `store-pulse-workshop-prompt-writing` | Keeps prompts self-contained, mechanically verifiable, and scoped to one feature.     |
+| Codebase tour questions    | `store-pulse-codebase-tour`           | Gives participants grounded explanations before they ask Codex to edit files.         |
+
+Concrete prompts:
+
+```text
+Use the $store-pulse-domain-semantics skill. Add regional reporting without
+breaking closed-store or inactive-product behavior.
+```
+
+```text
+Use the $store-pulse-prisma-change skill. Add the store incident timeline
+feature with a new migration, realistic seed data, and focused tests.
+```
+
+```text
+Use the $store-pulse-workshop-prompt-writing skill. Turn this broad idea into a
+single mechanically verifiable Store Pulse feature prompt with exact commands
+and a completion signal.
+```
+
+Do not create a skill for "use TypeScript well" or "write good React." Create a
+skill for a Store Pulse workflow that Codex can reliably repeat.
+
+## Skill Authoring Rules
 
 A good Store Pulse skill should do three things:
 

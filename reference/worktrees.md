@@ -70,18 +70,18 @@ edits, tests, and reviews.
 
 Codex automatically does several useful things:
 
-| Codex behavior | What it means in a worktree |
-| --- | --- |
-| Uses the current working directory | `codex -C ../store-pulse-reorder` makes that worktree the workspace root. |
-| Loads repository instructions | Codex reads the applicable `AGENTS.md` instructions for the selected workspace. |
-| Tracks session metadata | Codex records session context such as working directory and branch when available. |
-| Shows repository state | `/status` reports the active session state, including the working directory. |
-| Shows the local diff | `/diff` shows the current Git diff for that worktree, including untracked files. |
-| Reviews local changes | `/review` reviews staged, unstaged, and untracked files in the current worktree. |
-| Detects branch context | The Codex terminal interface can show current branch, open pull request number, and committed branch diff statistics when Git and `gh` can provide them. |
-| Preserves user changes by instruction | Codex is instructed to treat dirty worktrees carefully and not revert changes it did not make. |
-| Applies cloud diffs to the current directory | `codex apply <task-id>` and `codex cloud apply <task-id>` apply the selected diff to the current local working tree. |
-| Defaults cloud tasks to the current branch | `codex cloud exec --env <environment>` uses the current branch when it can detect one, unless you pass `--branch`. |
+| Codex behavior                               | What it means in a worktree                                                                                                                              |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Uses the current working directory           | `codex -C ../store-pulse-reorder` makes that worktree the workspace root.                                                                                |
+| Loads repository instructions                | Codex reads the applicable `AGENTS.md` instructions for the selected workspace.                                                                          |
+| Tracks session metadata                      | Codex records session context such as working directory and branch when available.                                                                       |
+| Shows repository state                       | `/status` reports the active session state, including the working directory.                                                                             |
+| Shows the local diff                         | `/diff` shows the current Git diff for that worktree, including untracked files.                                                                         |
+| Reviews local changes                        | `/review` reviews staged, unstaged, and untracked files in the current worktree.                                                                         |
+| Detects branch context                       | The Codex terminal interface can show current branch, open pull request number, and committed branch diff statistics when Git and `gh` can provide them. |
+| Preserves user changes by instruction        | Codex is instructed to treat dirty worktrees carefully and not revert changes it did not make.                                                           |
+| Applies cloud diffs to the current directory | `codex apply <task-id>` and `codex cloud apply <task-id>` apply the selected diff to the current local working tree.                                     |
+| Defaults cloud tasks to the current branch   | `codex cloud exec --env <environment>` uses the current branch when it can detect one, unless you pass `--branch`.                                       |
 
 The key detail is that **current directory is the boundary**. If you start Codex
 in the wrong worktree, Codex will faithfully inspect and edit the wrong place.
@@ -382,12 +382,12 @@ are choosing to do merge work later.
 
 For the Store Pulse workshop prompts, these pairs are likely to overlap:
 
-| Feature | Likely shared files |
-| --- | --- |
-| Smart reorder suggestions | `lib/metrics.ts`, dashboard route, store detail route, unit tests |
-| Incident timeline | `prisma/schema.prisma`, seed data, store detail route |
-| Operations assistant panel | dashboard route, `lib/` helper, unit tests |
-| Store detail task completion | store detail route, server action or task helper |
+| Feature                      | Likely shared files                                               |
+| ---------------------------- | ----------------------------------------------------------------- |
+| Smart reorder suggestions    | `lib/metrics.ts`, dashboard route, store detail route, unit tests |
+| Incident timeline            | `prisma/schema.prisma`, seed data, store detail route             |
+| Operations assistant panel   | dashboard route, `lib/` helper, unit tests                        |
+| Store detail task completion | store detail route, server action or task helper                  |
 
 Parallelize features that touch different surfaces. Serialize features that
 both change schema, seed data, or the same route.
